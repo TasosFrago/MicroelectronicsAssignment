@@ -1,4 +1,6 @@
 import os
+import sys
+import pdfkit
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import log as ln
@@ -98,19 +100,31 @@ def diode(pVolts: list[float], current: list[float], diodeName: str, num: int) -
         plt.show()
 
 if __name__=="__main__":
-    # Voltages
-    volts: list[float] = [round((0.315 + (0.03)*i), 3) for i in range(15)]; volts.append(0.739)
-    volts2: list[float] = [round((0.034 + (0.02)*i), 3) for i in range(22)]
+    if sys.argv[1] == "pdf":
+        options = {
+            'enable-local-file-access': '',
+            'page-size': 'A4',
+            'margin-top': '1cm',
+            'margin-bottom': '1cm',
+            'margin-left': '2cm',
+            'margin-right': '2cm'
+        }
 
-    # Curents
-    iDiode: list[float] = [0.01, 0.02, 0.03, 0.05, 0.09, 0.17, 0.29, 0.52, 0.92, 1.67, 3.02, 5.69, 10.93, 21.76, 44.81, 50.54]
-    iDiode2: list[float] = [0.01, 0.02, 0.03, 0.06, 0.09, 0.14, 0.21, 0.64, 0.92, 1.30, 1.74, 2.20, 2.68, 3.20, 3.72, 4.25, 6.76, 7.29, 7.77, 8.51, 8.92, 10.22]
+        pdfkit.from_file("58633.html", "58633.pdf", options=options)
+    else:
+        # Voltages
+        volts: list[float] = [round((0.315 + (0.03)*i), 3) for i in range(15)]; volts.append(0.739)
+        volts2: list[float] = [round((0.034 + (0.02)*i), 3) for i in range(22)]
 
-    addToCSV(volts, iDiode, volts2, iDiode2, filename="table.csv")
+        # Curents
+        iDiode: list[float] = [0.01, 0.02, 0.03, 0.05, 0.09, 0.17, 0.29, 0.52, 0.92, 1.67, 3.02, 5.69, 10.93, 21.76, 44.81, 50.54]
+        iDiode2: list[float] = [0.01, 0.02, 0.03, 0.06, 0.09, 0.14, 0.21, 0.64, 0.92, 1.30, 1.74, 2.20, 2.68, 3.20, 3.72, 4.25, 6.76, 7.29, 7.77, 8.51, 8.92, 10.22]
 
-    # Convert Curents to Amps
-    iDiode = [(iDiode[i] * (10**-3)) for i in range(len(iDiode))]
-    iDiode2 = [(iDiode2[i] * (10**-3)) for i in range(len(iDiode2))]
+        addToCSV(volts, iDiode, volts2, iDiode2, filename="table.csv")
 
-    diode(volts, iDiode, "Δίοδος Ι", num=1)
-    diode(volts2, iDiode2, "Δίοδος ΙΙ", num=2)
+        # Convert Curents to Amps
+        iDiode = [(iDiode[i] * (10**-3)) for i in range(len(iDiode))]
+        iDiode2 = [(iDiode2[i] * (10**-3)) for i in range(len(iDiode2))]
+
+        diode(volts, iDiode, "Δίοδος Ι", num=1)
+        diode(volts2, iDiode2, "Δίοδος ΙΙ", num=2)
